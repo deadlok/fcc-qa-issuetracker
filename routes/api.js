@@ -98,7 +98,7 @@ module.exports = function (app) {
       let Issue = mongoose.model(project, issueSchema)
       
 
-      if (_id == '') {
+      if (!_id) {
         res.json({error: 'missing _id'})
       } else {
         try { 
