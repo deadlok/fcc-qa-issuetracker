@@ -104,6 +104,7 @@ module.exports = function (app) {
         try { 
         await Issue.findById(_id)
         .then(async data => {
+          console.log("body :")
           console.log(req.body)
 
           if (req.body.issue_title){
@@ -121,14 +122,14 @@ module.exports = function (app) {
           if (req.body.status_text){
             data.status_text = req.body.status_text
           }
-          if (req.body.open == true){
-            data.open == false
+          if (req.body.open == false){
+            data.open == req.body.open
           }
           data.updated_on = Date.now()
 
           const newIssue = await data.save()
           console.log(newIssue)
-          res.json(newIssue)
+          res.json({result: 'successfully updated', '_id': _id })
         })
       } catch (e) {
         console.log(e)
