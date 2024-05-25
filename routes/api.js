@@ -68,8 +68,8 @@ module.exports = function (app) {
       let created_by = req.body.created_by;
       let created_on = Date.now();
       let updated_on = created_on;
-      let assigned_to = req.body.assigned_to;
-      let status_text = req.body.status_text;
+      let assigned_to = req.body.assigned_to+"";
+      let status_text = req.body.status_text+"";
       //console.log(project)
       //console.log(issue_text)
       //console.log(created_on)
@@ -80,8 +80,8 @@ module.exports = function (app) {
         issue_title: issue_title,
         issue_text: issue_text,
         created_by: created_by,
-        created_on, created_on,
-        updated_on, updated_on,
+        created_on: created_on,
+        updated_on: updated_on,
         assigned_to: assigned_to,
         status_text: status_text
       })
