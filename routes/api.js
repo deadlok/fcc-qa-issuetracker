@@ -83,16 +83,8 @@ module.exports = function (app) {
       })
       try {
         const data = await issue.save();
-        // let obj = {_id: data._id, 
-        //             assigned_to: data.assigned_to,
-        //             status_text: data.status_text,
-        //             issue_title: data.issue_title, 
-        //             issue_text: data.issue_text, 
-        //             created_by: data.created_by, 
-        //             created_on: data.created_on, 
-        //             updated_on: data.updated_on, 
-        //             open: data.open}
-        console.log(data)
+
+        //console.log(data)
         res.json(data);
       } catch(err){
         console.log(err);
@@ -112,7 +104,8 @@ module.exports = function (app) {
         try { 
         await Issue.findById(_id)
         .then(async data => {
-          
+          console.log(req.body)
+
           if (req.body.issue_title){
             data.issue_title = req.body.issue_title;
           }
@@ -131,11 +124,11 @@ module.exports = function (app) {
           if (req.body.open == true){
             data.open == false
           }
-          data.updated_on(Date.now())
+          data.updated_on = Date.now()
 
           const newIssue = await data.save()
+          console.log(newIssue)
           res.json(newIssue)
-  
         })
       } catch (e) {
         console.log(e)
