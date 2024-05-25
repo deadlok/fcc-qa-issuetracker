@@ -99,7 +99,7 @@ module.exports = function (app) {
       
 
       if (_id == '') {
-        res.json({error: 'missing_id'})
+        res.json({error: 'missing _id'})
       } else {
         try { 
         await Issue.findById(_id)
@@ -107,33 +107,43 @@ module.exports = function (app) {
           console.log("body :")
           console.log(req.body)
 
+          let updateTotal = 0 
           if (req.body.issue_title){
             data.issue_title = req.body.issue_title;
+            updateTotal += 1;
           }
           if (req.body.issue_text){
             data.issue_text = req.body.issue_text;
+            updateTotal += 1;
           }
           if (req.body.created_by){
             data.created_by = req.body.created_by;
+            updateTotal += 1;
           }
           if (req.body.assigned_to){
             data.assigned_to = req.body.req.body.assigned_to
+            updateTotal += 1;
           }
           if (req.body.status_text){
             data.status_text = req.body.status_text
+            updateTotal += 1;
           }
-          if (req.body.open == false){
+          if (req.body.open == 'false'){
             data.open == req.body.open
+            updateTotal += 1;
           }
-          data.updated_on = Date.now()
 
-          const newIssue = await data.save()
-          console.log(newIssue)
-          res.json({result: 'successfully updated', '_id': _id })
+          if (updateTotal == 0) res.json({ error: 'no update field(s) sent', '_id':_id})
+          else {
+            data.updated_on = Date.now()
+            const newIssue = await data.save()
+            console.log(newIssue)
+            res.json({result: 'successfully updated', '_id': _id })
+          }
         })
       } catch (e) {
         console.log(e)
-        res.json({error: 'could not update', '_id':_id})
+        res.json({error: 'could not update', '_id': _id })
       }
     }
     })
