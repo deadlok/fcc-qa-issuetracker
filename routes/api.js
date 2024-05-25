@@ -38,7 +38,7 @@ module.exports = function (app) {
     },
     open: {
       type: Boolean,
-      default: false
+      default: true
     },
     status_text: {
       type: String
