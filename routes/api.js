@@ -58,7 +58,6 @@ module.exports = function (app) {
       } catch(e) {
         console.log(e);
       }
-
     })
     
     .post(async function (req, res){
@@ -88,17 +87,17 @@ module.exports = function (app) {
       })
       try {
         const data = await issue.save();
-        let obj = {_id: data._id, 
-                    assigned_to: data.assigned_to,
-                    status_text: data.status_text,
-                    issue_title: data.issue_title, 
-                    issue_text: data.issue_text, 
-                    created_by: data.created_by, 
-                    created_on: data.created_on, 
-                    updated_on: data.updated_on, 
-                    open: data.open}
-        console.log(obj)
-        res.json(obj);
+        // let obj = {_id: data._id, 
+        //             assigned_to: data.assigned_to,
+        //             status_text: data.status_text,
+        //             issue_title: data.issue_title, 
+        //             issue_text: data.issue_text, 
+        //             created_by: data.created_by, 
+        //             created_on: data.created_on, 
+        //             updated_on: data.updated_on, 
+        //             open: data.open}
+        console.log(data)
+        res.json(data);
       } catch(err){
         console.log(err);
         if(err.message.match('is required')) res.json({error: 'required field(s) missing'});
@@ -130,14 +129,13 @@ module.exports = function (app) {
           if (req.body.assigned_to){
             data.assigned_to = req.body.req.body.assigned_to
           }
-  
           if (req.body.status_text){
             data.status_text = req.body.status_text
           }
-  
           if (req.body.open == true){
-            data.open == true
+            data.open == false
           }
+          data.updated_on(Date.now())
 
           const newIssue = await data.save()
           res.json(newIssue)
