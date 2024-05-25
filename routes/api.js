@@ -1,27 +1,169 @@
 'use strict';
+require('dotenv').config();
 
 module.exports = function (app) {
 
+  const mongoose = require('mongoose')
+  mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+  .then(()=>{
+    console.log("Connected to MongoDB")
+  })
+  .catch((e)=>{
+    console.log("Cannot Connected to MongoDB")
+    console.log(e)
+  });
+
+  const issueSchema = new mongoose.Schema({
+    issue_title: {
+      type: String,
+      required: true
+    },
+    issue_text: {
+      type: String,
+      required: true
+    },
+    created_by: {
+      type: String,
+      required: true
+    },
+    created_on: {
+      type: Date,
+      required: true
+    },
+    updated_on: {
+      type: Date
+    },
+    assigned_to: {
+      type: String
+    },
+    open: {
+      type: Boolean,
+      default: false
+    },
+    status_text: {
+      type: String
+    }
+  })
+
   app.route('/api/issues/:project')
   
-    .get(function (req, res){
+    .get(async function (req, res){
       let project = req.params.project;
-      
+      let Issue = mongoose.model(project, issueSchema)
+
+      let reqParam = req.query;
+      try {
+        const data = await Issue.find(reqParam);
+        res.json(data)
+      } catch(e) {
+        console.log(e);
+      }
+
     })
     
-    .post(function (req, res){
+    .post(async function (req, res){
       let project = req.params.project;
-      
+
+      let issue_title = req.body.issue_title;
+      let issue_text = req.body.issue_text;
+      let created_by = req.body.created_by;
+      let created_on = Date.now();
+      let updated_on = created_on;
+      let assigned_to = req.body.assigned_to;
+      let status_text = req.body.status_text;
+      //console.log(project)
+      //console.log(issue_text)
+      //console.log(created_on)
+
+      let Issue = mongoose.model(project, issueSchema)
+
+      let issue = new Issue({
+        issue_title: issue_title,
+        issue_text: issue_text,
+        created_by: created_by,
+        created_on, created_on,
+        updated_on, updated_on,
+        assigned_to: assigned_to,
+        status_text: status_text
+      })
+      try {
+        const data = await issue.save();
+        let obj = {_id: data._id, 
+                    assigned_to: data.assigned_to,
+                    status_text: data.status_text,
+                    issue_title: data.issue_title, 
+                    issue_text: data.issue_text, 
+                    created_by: data.created_by, 
+                    created_on: data.created_on, 
+                    updated_on: data.updated_on, 
+                    open: data.open}
+        console.log(obj)
+        res.json(obj);
+      } catch(err){
+        console.log(err);
+        if(err.message.match('is required')) res.json({error: 'required field(s) missing'});
+      } 
     })
     
-    .put(function (req, res){
+    .put(async function (req, res){
       let project = req.params.project;
+      let _id = req.body._id;
+      let Issue = mongoose.model(project, issueSchema)
       
+
+      if (_id == '') {
+        res.json({error: 'missing_id'})
+      } else {
+        try { 
+        await Issue.findById(_id)
+        .then(async data => {
+          
+          if (req.body.issue_title){
+            data.issue_title = req.body.issue_title;
+          }
+          if (req.body.issue_text){
+            data.issue_text = req.body.issue_text;
+          }
+          if (req.body.created_by){
+            data.created_by = req.body.created_by;
+          }
+          if (req.body.assigned_to){
+            data.assigned_to = req.body.req.body.assigned_to
+          }
+  
+          if (req.body.status_text){
+            data.status_text = req.body.status_text
+          }
+  
+          if (req.body.open == true){
+            data.open == true
+          }
+
+          const newIssue = await data.save()
+          res.json(newIssue)
+  
+        })
+      } catch (e) {
+        console.log(e)
+        res.json({error: 'could not update', '_id':_id})
+      }
+    }
     })
     
-    .delete(function (req, res){
+    .delete(async function (req, res){
       let project = req.params.project;
-      
+      let _id = req.body._id;
+      if (_id == '') {
+        res.json({error: 'missing_id'})
+      } else { 
+        let Issue = mongoose.model(project, issueSchema)
+        try {
+          await Issue.findOneAndRemove({_id: _id})
+          res.json({result: 'successfully deleted', '_id':_id})
+        } catch(e) {
+          res.json({error: 'could not delete', '_id': _id})
+        }
+      }
     });
     
 };

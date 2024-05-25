@@ -94,6 +94,9 @@
             data: $('#testForm2').serialize(),
             success: function(data) {
               $('#jsonResult').text(JSON.stringify(data));
+            },
+            error: function(err){
+              console.log(err)
             }
           });
           e.preventDefault();
