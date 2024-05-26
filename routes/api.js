@@ -87,7 +87,7 @@ module.exports = function (app) {
         //console.log(data)
         res.json(data);
       } catch(err){
-        console.log(err);
+        //console.log(err);
         if(err.message.match('is required')) res.json({error: 'required field(s) missing'});
       } 
     })
@@ -104,8 +104,8 @@ module.exports = function (app) {
         try { 
         await Issue.findById(_id)
         .then(async data => {
-          console.log("body :")
-          console.log(req.body)
+          //console.log("body :")
+          //console.log(req.body)
 
           let updateTotal = 0 
           if (req.body.issue_title){
@@ -137,12 +137,12 @@ module.exports = function (app) {
           else {
             data.updated_on = Date.now()
             const newIssue = await data.save()
-            console.log(newIssue)
+            //console.log(newIssue)
             res.json({result: 'successfully updated', '_id': _id })
           }
         })
       } catch (e) {
-        console.log(e)
+        //console.log(e)
         res.json({error: 'could not update', '_id': _id })
       }
     }
@@ -151,6 +151,8 @@ module.exports = function (app) {
     .delete(async function (req, res){
       let project = req.params.project;
       let _id = req.body._id;
+      console.log(_id)
+      
       if (_id) {
         res.json({error: 'missing _id'})
       } else { 
