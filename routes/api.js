@@ -154,12 +154,14 @@ module.exports = function (app) {
       console.log('id=' + _id)
       
       if (!_id) {
+        console.log('missing _id')
         res.json({error: 'missing _id'})
       } else { 
         let Issue = mongoose.model(project, issueSchema)
         try {
-          await Issue.findOneAndDelete({_id: _id})
-          res.json({result: 'successfully deleted', '_id': _id})
+          await Issue.findOneAndDelete({_id: _id});
+          console.log("success");
+          res.json({result: 'successfully deleted', '_id': _id});
         } catch(e) {
           console.log(e)
           res.json({error: 'could not delete', '_id': _id})
