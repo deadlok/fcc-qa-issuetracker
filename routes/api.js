@@ -151,7 +151,7 @@ module.exports = function (app) {
     .delete(async function (req, res){
       let project = req.params.project;
       let _id = req.body._id;
-      console.log('id=' + _id)
+      //console.log('id=' + _id)
       
       if (!_id) {
         console.log('missing _id')
